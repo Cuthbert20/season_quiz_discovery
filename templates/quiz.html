@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Season Quiz - Questions 🤔</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="quiz-card">
+            <h1 class="title">Season Personality Quiz 🧠</h1>
+            <p class="subtitle">Choose the answer that feels most like you!</p>
+            
+            <form method="POST" action="/submit" id="quizForm">
+                {% for question in questions %}
+                <div class="question-block">
+                    <h2 class="question-number">Question {{ question.id }}</h2>
+                    <p class="question-text">{{ question.question }}</p>
+                    
+                    <div class="options-container">
+                        {% for option in question.options %}
+                        <label class="option-label">
+                            <input 
+                                type="radio" 
+                                name="question_{{ question.id }}" 
+                                value="{{ loop.index0 }}"
+                                required
+                            >
+                            <span class="option-text">{{ option.text }}</span>
+                        </label>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+                
+                <button type="submit" class="btn btn-primary btn-large">
+                    See My Season! 🎉
+                </button>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        // Add smooth scroll behavior and form validation feedback
+        document.getElementById('quizForm').addEventListener('submit', function(e) {
+            const requiredInputs = document.querySelectorAll('input[required]');
+            let allAnswered = true;
+            
+            // Check if at least one option per question is selected
+            const questions = {{ questions | length }};
+            for (let i = 1; i <= questions; i++) {
+                const answered = document.querySelector(`input[name="question_${i}"]:checked`);
+                if (!answered) {
+                    allAnswered = false;
+                    break;
+                }
+            }
+            
+            if (!allAnswered) {
+                e.preventDefault();
+                alert('Please answer all questions before submitting! 😊');
+            }
+        });
+        
+        // Add click animation to options
+        document.querySelectorAll('.option-label').forEach(label => {
+            label.addEventListener('click', function() {
+                // Remove selected class from siblings
+                const siblings = this.parentElement.querySelectorAll('.option-label');
+                siblings.forEach(sib => sib.classList.remove('selected'));
+                // Add selected class to clicked option
+                this.classList.add('selected');
+            });
+        });
+    </script>
+</body>
+</html>
