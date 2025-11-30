@@ -52,4 +52,4 @@ Thumbs.db
 *.log
 
 #ignore uv.lock for now.
-.uv.lock
+uv.lock
