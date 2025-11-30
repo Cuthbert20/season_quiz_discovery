@@ -4,8 +4,9 @@ A fun quiz app that assigns seasons based on personality traits.
 """
 
 import secrets
+import random
 
-from flask import Flask, render_template, request, session
+from flask import Flask, render_template, request, session, redirect, url_for
 
 app = Flask(__name__)
 # Secret key for session management
@@ -63,9 +64,6 @@ QUIZ_QUESTIONS = [
             {"text": "Ready for new beginnings 🌱", "season": "spring"},
         ],
     },
-
-    # --- NEW QUESTIONS BELOW ---
-
     {
         "id": 6,
         "question": "Which outfit are you most likely to wear?",
@@ -339,7 +337,10 @@ def submit():
     """Process quiz answers and calculate the season result."""
     # Count votes for each season
     season_votes = {"summer": 0, "fall": 0, "winter": 0, "spring": 0}
-
+    questions_asked = session.get("questions_asked", )
+    if not questions_asked:
+        # Handling empty session, we redirect to the start of the quiz.
+        return redirect(url_for("index"))
     # Process each answer
     for question in QUIZ_QUESTIONS:
         answer_key = f"question_{question['id']}"
