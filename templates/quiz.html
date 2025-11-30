@@ -42,17 +42,24 @@
     </div>
     
     <script>
+        console.log("DEBUG: Quiz page loaded, JavaScript is working!");
+        
         // Add smooth scroll behavior and form validation feedback
         document.getElementById('quizForm').addEventListener('submit', function(e) {
-            const requiredInputs = document.querySelectorAll('input[required]');
+            console.log("DEBUG: Form submitted! Starting validation...");
             let allAnswered = true;
             
-            // Check if at least one option per question is selected
-            const questions = {{ questions | length }};
-            for (let i = 1; i <= questions; i++) {
-                const answered = document.querySelector(`input[name="question_${i}"]:checked`);
+            // Get the actual question IDs from the server-rendered data
+            const questionIds = {{ questions | map(attribute='id') | list }};
+            console.log('DEBUG: Question IDs to check:', questionIds);
+            
+            // Check if an option is selected for each actual question ID
+            for (const questionId of questionIds) {
+                const answered = document.querySelector(`input[name="question_${questionId}"]:checked`);
+                console.log(`DEBUG: Checking question_${questionId}, answered:`, !!answered);
                 if (!answered) {
                     allAnswered = false;
+                    console.log(`DEBUG: Question ${questionId} was not answered!`);
                     break;
                 }
             }

@@ -328,8 +328,15 @@ def index():
 
 @app.route("/quiz")
 def quiz():
-    """Display the quiz questions."""
-    return render_template("quiz.html", questions=QUIZ_QUESTIONS)
+    """Select 7 random questions from the quiz & display them."""
+    random_questions = random.sample(QUIZ_QUESTIONS, k=7)
+    
+    # Shuffle the options for each question
+    for question in random_questions:
+        random.shuffle(question["options"])
+    
+    session["quiz_questions"] = random_questions
+    return render_template("quiz.html", questions=random_questions)
 
 
 @app.route("/submit", methods=["POST"])
@@ -337,12 +344,23 @@ def submit():
     """Process quiz answers and calculate the season result."""
     # Count votes for each season
     season_votes = {"summer": 0, "fall": 0, "winter": 0, "spring": 0}
-    questions_asked = session.get("questions_asked", )
+    
+    # DEBUG: Print what we received from the form
+    print("=== DEBUG: Form Data Received ===")
+    print(f"All form data: {dict(request.form)}")
+    
+    questions_asked = session.get("quiz_questions")
+    print(f"=== DEBUG: Questions in Session ===")
+    print(f"Number of questions: {len(questions_asked) if questions_asked else 0}")
+    if questions_asked:
+        for q in questions_asked:
+            print(f"  - Question ID: {q['id']}, Text: {q['question'][:50]}...")
+    
     if not questions_asked:
         # Handling empty session, we redirect to the start of the quiz.
         return redirect(url_for("index"))
-    # Process each answer
-    for question in QUIZ_QUESTIONS:
+    # Process each answer based on the questions stored in the session
+    for question in questions_asked:
         answer_key = f"question_{question['id']}"
         selected_option = request.form.get(answer_key)
 
