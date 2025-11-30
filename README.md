@@ -1,4 +1,4 @@
-# 🌈 Season Personality Quiz
+# 🧠 Season Personality Quiz
 
 A fun and interactive quiz application that assigns you a season based on your personality! Built with Python, Flask, and lots of colorful design.
 
