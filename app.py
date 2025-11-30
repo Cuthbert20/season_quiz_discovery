@@ -10,6 +10,8 @@ from flask import Flask, render_template, request, session, redirect, url_for
 
 app = Flask(__name__)
 # Secret key for session management
+# RYKER LEARNING: Here is where we create the lock for our session data. Like a backback of data that the user carries with them as they navigate the app.
+# You can view the signed/encrypted data in the chrome dev-tools (remember when showing teacher: F12, application, cookies, localhost)
 app.secret_key = secrets.token_hex(16)
 
 # Quiz questions with options that map to seasons
