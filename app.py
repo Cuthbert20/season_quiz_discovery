@@ -393,6 +393,12 @@ def restart():
     session.clear()
     return render_template("index.html")
 
+@app.route("/crash")
+def crash():
+    # This will cause a ZeroDivisionError
+    # Using so as to triger the debugger.
+    return 1 / 0
+
 
 if __name__ == "__main__":
     # Run the Flask development server
